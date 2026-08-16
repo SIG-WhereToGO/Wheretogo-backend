@@ -1,0 +1,58 @@
+# ==========================================
+# Render 배포 설정 (Blueprint)
+# Render 대시보드에서 "New + > Blueprint"로 이 레포를 연결하면 아래 설정대로 서비스가 생성됩니다.
+# Blueprint를 쓰지 않고 수동으로 Web Service를 만든다면,
+# 아래 buildCommand / startCommand를 Render 대시보드의 Settings에 그대로 입력해주세요.
+# ==========================================
+services:
+  - type: web
+    name: wheretogo-backend
+    runtime: python
+    plan: standard
+    # ==========================================
+    # USER CONFIGURATION
+    # torch는 기본적으로 CUDA 포함 wheel(용량 큼)을 받으므로,
+    # GPU가 없는 Render 환경에서는 CPU 전용 wheel을 먼저 설치해 빌드 시간/용량을 줄입니다.
+    # (torch/transformers/sentence-transformers는 무겁기 때문에 standard 이상 플랜 권장.
+    #  무료 플랜(512MB RAM)에서는 모델 로딩 중 메모리 부족으로 실패할 수 있습니다.)
+    # ==========================================
+    buildCommand: >
+      pip install --upgrade pip &&
+      pip install torch==2.9.0 --index-url https://download.pytorch.org/whl/cpu &&
+      pip install -r requirements.txt
+    # ch01/app/main.py가 `from app.routers import spots`(ch01 기준)와
+    # `from ch01.app...`(레포 루트 기준) import를 함께 사용하고 있어
+    # 두 경로 모두 PYTHONPATH에 포함되어야 합니다.
+    startCommand: "uvicorn ch01.app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHONPATH
+        value: ".:./ch01"
+      # ==========================================
+      # USER CONFIGURATION
+      # 아래 값들은 여기 값 그대로가 아니라, Render 대시보드 > Environment 탭에서
+      # 실제 값으로 직접 채워주세요. (.env는 .gitignore에 포함되어 있어 배포에 반영되지 않습니다)
+      # ==========================================
+      - key: DATABASE_URL
+        sync: false
+      - key: KLUE_MODEL_PATH
+        sync: false
+      - key: KLUE_TOKENIZER_PATH
+        sync: false
+      - key: SBERT_MODEL_PATH
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_API_BASE_URL
+        value: "https://api.openai.com/v1"
+      - key: LLM_MODEL_NAME
+        value: "gpt-4o-mini"
+      - key: DEFAULT_RADIUS_KM
+        value: "3"
+      - key: TAG_THRESHOLD
+        value: "0.5"
+      - key: ANALYSIS_TTL_MINUTES
+        value: "30"
+      - key: USE_POSTGIS
+        value: "false"
+      - key: MAX_INPUT_LENGTH
+        value: "300"

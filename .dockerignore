@@ -1,0 +1,14 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+.pytest_cache
+.venv
+venv
+ml_models/
+*.env
+.env
+tests/
+README.md
+poetry.lock
+render.yaml

@@ -1,0 +1,103 @@
+"""
+여행지 후보군 조회 Repository
+==========================================
+USER CONFIGURATION
+실제 테이블명/컬럼명(spot_id, region, address, latitude, longitude 등)이 다르면
+아래 쿼리를 수정해주세요. 기본값은 ch01/app/routers/spots.py에서 이미 사용 중인
+"TouristSpot" 테이블 스키마를 그대로 따릅니다.
+==========================================
+"""
+from typing import List
+
+from sqlalchemy import text as sql_text
+
+from ch01.app.config.settings import get_settings
+from ch01.app.database import engine
+from ch01.app.utils.distance import haversine_distance_km
+
+
+def find_ids_by_region(region: str) -> List[int]:
+    """지역명 기준으로 여행지 후보 ID 목록을 조회합니다."""
+    try:
+        with engine.connect() as connection:
+            rows = connection.execute(
+                sql_text(
+                    """
+                    SELECT spot_id
+                    FROM "TouristSpot"
+                    WHERE region ILIKE :region;
+                    """
+                ),
+                {"region": f"%{region}%"},
+            ).mappings().all()
+    except Exception as e:
+        raise RuntimeError(f"PostgreSQL 지역 조회 실패: {e}") from e
+
+    return [row["spot_id"] for row in rows]
+
+
+def find_ids_within_radius_postgis(lat: float, lon: float, radius_km: float) -> List[int]:
+    """
+    PostGIS ST_DWithin을 이용한 거리 필터링.
+    ==========================================
+    USER CONFIGURATION
+    DB에 PostGIS extension이 설치되어 있어야 하며(CREATE EXTENSION postgis;),
+    별도의 geometry/geography 컬럼이 있다면 ST_MakePoint(longitude, latitude) 부분을
+    해당 컬럼명으로 교체해주세요.
+    ==========================================
+    """
+    try:
+        with engine.connect() as connection:
+            rows = connection.execute(
+                sql_text(
+                    """
+                    SELECT spot_id
+                    FROM "TouristSpot"
+                    WHERE ST_DWithin(
+                        geography(ST_MakePoint(longitude, latitude)),
+                        geography(ST_MakePoint(:lon, :lat)),
+                        :radius_m
+                    );
+                    """
+                ),
+                {"lon": lon, "lat": lat, "radius_m": radius_km * 1000},
+            ).mappings().all()
+    except Exception as e:
+        raise RuntimeError(f"PostGIS 거리 조회 실패: {e}") from e
+
+    return [row["spot_id"] for row in rows]
+
+
+def find_ids_within_radius_haversine(lat: float, lon: float, radius_km: float) -> List[int]:
+    """
+    PostGIS를 사용할 수 없을 때 Haversine Formula로 애플리케이션 레벨에서 필터링합니다.
+    여행지 데이터가 매우 많다면 위경도 bounding box로 1차 필터링 후 계산하는 것을 권장합니다.
+    """
+    try:
+        with engine.connect() as connection:
+            rows = connection.execute(
+                sql_text(
+                    """
+                    SELECT spot_id, latitude, longitude
+                    FROM "TouristSpot"
+                    WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
+                    """
+                )
+            ).mappings().all()
+    except Exception as e:
+        raise RuntimeError(f"PostgreSQL 거리 조회(Haversine) 실패: {e}") from e
+
+    result_ids: List[int] = []
+    for row in rows:
+        distance = haversine_distance_km(lat, lon, float(row["latitude"]), float(row["longitude"]))
+        if distance <= radius_km:
+            result_ids.append(row["spot_id"])
+
+    return result_ids
+
+
+def find_ids_within_radius(lat: float, lon: float, radius_km: float) -> List[int]:
+    settings = get_settings()
+    if settings.use_postgis:
+        return find_ids_within_radius_postgis(lat, lon, radius_km)
+    return find_ids_within_radius_haversine(lat, lon, radius_km)
