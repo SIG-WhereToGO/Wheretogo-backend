@@ -1,7 +1,6 @@
 """
 애플리케이션 설정
-POST /analyze 기능에서만 사용하는 설정을 모아둡니다.
-기존 database.py의 DATABASE_URL 로딩 방식은 건드리지 않습니다.
+POST /analyze 기능에서만 사용하는 설정을 모아둠
 """
 import os
 from functools import lru_cache
@@ -37,7 +36,7 @@ class Settings(BaseSettings):
     # ==========================================
     # USER CONFIGURATION
     # 태그 threshold (기본값). Fine-Tuning 시 태그별로 다른 threshold를 정했다면
-    # tag_threshold_overrides 에 {"태그명": threshold} 형태로 채워주세요.
+    # tag_threshold_overrides 에 {"태그명": threshold} 형태로 채우기
     # 예: {"style_activity": 0.45, "companion_pet": 0.6}
     # ==========================================
     tag_threshold_default: float = float(os.getenv("TAG_THRESHOLD", "0.5"))
@@ -51,7 +50,7 @@ class Settings(BaseSettings):
 
     # ==========================================
     # USER CONFIGURATION
-    # In-Memory Store TTL(분). 이 시간이 지나면 분석 결과가 자동 삭제됩니다.
+    # In-Memory Store TTL(분). 이 시간이 지나면 분석 결과가 자동 삭제
     # ==========================================
     analysis_ttl_minutes: int = int(os.getenv("ANALYSIS_TTL_MINUTES", "30"))
 

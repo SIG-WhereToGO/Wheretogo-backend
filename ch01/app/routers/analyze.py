@@ -1,9 +1,6 @@
 """
 POST /analyze
-==========================================
-현재 단계에서 외부에 노출되는 유일한 신규 API Endpoint 입니다.
-기존 GET /api/spots/{spot_id} (ch01/app/routers/spots.py)는 수정하지 않았습니다.
-==========================================
+
 """
 from fastapi import APIRouter, HTTPException
 

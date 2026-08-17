@@ -1,6 +1,6 @@
 """
 KLUE-RoBERTa를 이용한 태그 추출 서비스
-모델의 output(라벨 name 기준)을 DB의 Tag 테이블(tag_id, name)과 매핑합니다.
+모델의 output(라벨 name 기준)을 DB의 Tag 테이블(tag_id, name)과 매핑
 """
 from typing import Dict, List, Optional
 
@@ -18,12 +18,8 @@ _tag_id_cache: Optional[Dict[str, int]] = None
 
 def _load_tag_id_map() -> Dict[str, int]:
     """
-    DB의 Tag 테이블에서 name -> tag_id 매핑을 가져와 캐싱합니다.
-    ==========================================
-    USER CONFIGURATION
-    실제 태그 테이블명/컬럼명이 다르면 아래 쿼리를 수정해주세요.
-    (ch01/app/routers/spots.py에서 사용 중인 "Tag" 테이블과 동일한 테이블을 기본값으로 가정합니다)
-    ==========================================
+    DB의 Tag 테이블에서 name -> tag_id 매핑을 가져와 캐싱
+    
     """
     global _tag_id_cache
     if _tag_id_cache is not None:

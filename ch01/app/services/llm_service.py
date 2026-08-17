@@ -1,6 +1,6 @@
 """
 LLM API를 이용한 지역 및 거리 조건 추출 서비스
-LLM은 절대 여행지를 직접 추천하지 않고, 아래 구조만 추출합니다.
+LLM은 절대 여행지를 직접 추천하지 않고, 아래 구조만 추출
 
 { "region": str | None, "nearby": bool, "distance": float | None, "unit": str | None }
 """
@@ -35,12 +35,7 @@ _SYSTEM_PROMPT = """당신은 여행 요청 문장에서 지역 및 거리 조�
 
 
 def _call_llm_api(input_text: str) -> str:
-    # ==========================================
-    # USER CONFIGURATION
-    # 현재는 OpenAI 호환(Chat Completions) 형식으로 구현되어 있습니다.
-    # 다른 LLM Provider(예: Anthropic, 국내 LLM 등)를 사용한다면
-    # 이 함수 내부의 요청/응답 파싱 로직을 해당 API 스펙에 맞게 교체해주세요.
-    # ==========================================
+
     settings = get_settings()
     if not settings.llm_api_key:
         raise RuntimeError("LLM API 호출 실패: LLM_API_KEY가 설정되지 않았습니다.")

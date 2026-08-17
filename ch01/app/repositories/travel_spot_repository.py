@@ -1,11 +1,6 @@
 """
 여행지 후보군 조회 Repository
-==========================================
-USER CONFIGURATION
-실제 테이블명/컬럼명(spot_id, region, address, latitude, longitude 등)이 다르면
-아래 쿼리를 수정해주세요. 기본값은 ch01/app/routers/spots.py에서 이미 사용 중인
-"TouristSpot" 테이블 스키마를 그대로 따릅니다.
-==========================================
+
 """
 from typing import List
 
@@ -39,12 +34,7 @@ def find_ids_by_region(region: str) -> List[int]:
 def find_ids_within_radius_postgis(lat: float, lon: float, radius_km: float) -> List[int]:
     """
     PostGIS ST_DWithin을 이용한 거리 필터링.
-    ==========================================
-    USER CONFIGURATION
-    DB에 PostGIS extension이 설치되어 있어야 하며(CREATE EXTENSION postgis;),
-    별도의 geometry/geography 컬럼이 있다면 ST_MakePoint(longitude, latitude) 부분을
-    해당 컬럼명으로 교체해주세요.
-    ==========================================
+
     """
     try:
         with engine.connect() as connection:
@@ -69,10 +59,8 @@ def find_ids_within_radius_postgis(lat: float, lon: float, radius_km: float) -> 
 
 
 def find_ids_within_radius_haversine(lat: float, lon: float, radius_km: float) -> List[int]:
-    """
-    PostGIS를 사용할 수 없을 때 Haversine Formula로 애플리케이션 레벨에서 필터링합니다.
-    여행지 데이터가 매우 많다면 위경도 bounding box로 1차 필터링 후 계산하는 것을 권장합니다.
-    """
+  
+
     try:
         with engine.connect() as connection:
             rows = connection.execute(

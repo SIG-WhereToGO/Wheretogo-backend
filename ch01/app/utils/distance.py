@@ -1,7 +1,7 @@
 """
 거리 계산 유틸리티
-PostGIS를 사용할 수 없는 환경을 위한 Haversine Formula 구현입니다.
-(PostGIS를 사용하는 경우 이 함수는 사용되지 않고, DB의 ST_DWithin이 사용됩니다.
+PostGIS를 사용할 수 없는 환경을 위한 Haversine Formula 구현
+(PostGIS를 사용하는 경우 이 함수는 사용되지 않고, DB의 ST_DWithin이 사용
  -> ch01/app/repositories/travel_spot_repository.py 참고)
 """
 import math
