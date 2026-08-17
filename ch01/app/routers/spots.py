@@ -53,7 +53,6 @@ def get_spot_detail(spot_id: int):
                 SELECT
                     t.tag_id,
                     t.name,
-                    t.category,
                     tst.confidence
                 FROM "TouristSpotTag" tst
                 JOIN "Tag" t
@@ -85,7 +84,6 @@ def get_spot_detail(spot_id: int):
             {
                 "tag_id": tag["tag_id"],
                 "name": tag["name"],
-                "category": tag["category"],
                 "confidence": tag["confidence"]
             }
             for tag in tag_rows
