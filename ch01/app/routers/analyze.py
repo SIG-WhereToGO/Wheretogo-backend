@@ -2,9 +2,9 @@
 POST /analyze
 
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 
-from ch01.app.config.settings import get_settings
+from ch01.app.config.settings import settings
 from ch01.app.schemas.analyze import AnalyzeRequest, AnalyzeResponse
 from ch01.app.services.analyze_service import analyze
 
@@ -13,7 +13,6 @@ router = APIRouter(tags=["여행 요구사항 분석"])
 
 @router.post("/analyze", response_model=AnalyzeResponse)
 def analyze_travel_request(payload: AnalyzeRequest):
-    settings = get_settings()
     input_text = payload.input_text.strip()
 
     # 입력문이 지나치게 긴 경우

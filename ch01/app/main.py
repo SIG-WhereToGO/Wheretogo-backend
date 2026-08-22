@@ -1,17 +1,16 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from app.routers import spots
 
 # ==========================================
 # 신규 POST /analyze API 관련 import
 # (기존 app.routers.spots / database 로직은 전혀 수정하지 않았습니다)
 # ==========================================
-from ch01.app.config.settings import get_settings
+from ch01.app.config.settings import settings
 from ch01.app.database import engine
 from ch01.app.models.klue_roberta import klue_roberta_model
 from ch01.app.models.sbert import sbert_model
-from ch01.app.routers import analyze
+from ch01.app.routers import analyze, recommendation_Info
 from ch01.app.stores.analysis_store import analysis_store
 
 
@@ -25,7 +24,6 @@ async def lifespan(app: FastAPI):
       -> Analysis Store 초기화(TTL 설정)
       -> Server Ready
     """
-    settings = get_settings()
 
     klue_roberta_model.load()
     sbert_model.load()
@@ -48,12 +46,11 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# 여행지 상세 조회 API 연결
-app.include_router(spots.router)
-
 # 여행 요구사항 분석 API 연결 (POST /analyze) - 신규 추가
 app.include_router(analyze.router)
 
+# 여행지 상세 조회 API 연결
+app.include_router(recommendation_Info.router)
 
 @app.get("/")
 def root():

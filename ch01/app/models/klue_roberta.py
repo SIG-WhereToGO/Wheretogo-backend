@@ -5,29 +5,11 @@ KLUE-RoBERTa 기반 여행 태그 다중 레이블(Multi-label) 분류 모델 �
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from ch01.app.config.settings import get_settings
+from ch01.app.config.settings import settings
 
 # ==========================================
 # ==========================================
-LABEL_ORDER = [
-    "companion_solo",
-    "companion_friend",
-    "companion_romantic_partner",
-    "companion_family",
-    "companion_group",
-    "companion_pet",
-    "style_healing",
-    "style_nature",
-    "style_activity",
-    "style_culture",
-    "style_history",
-    "style_photo_spot",
-    "style_outdoor",
-    "style_indoor",
-    "style_experience",
-    "style_food",
-    "style_shopping",
-]
+from ch01.app.schemas.tags import LABEL_ORDER
 
 
 class KlueRobertaTagModel:
@@ -37,7 +19,6 @@ class KlueRobertaTagModel:
         self._device = None
 
     def load(self) -> None:
-        settings = get_settings()
         self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         try:

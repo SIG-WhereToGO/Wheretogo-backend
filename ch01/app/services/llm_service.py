@@ -11,7 +11,7 @@ from typing import Optional
 import httpx
 from pydantic import BaseModel
 
-from ch01.app.config.settings import get_settings
+from ch01.app.config.settings import settings
 
 
 class RegionCondition(BaseModel):
@@ -36,7 +36,6 @@ _SYSTEM_PROMPT = """당신은 여행 요청 문장에서 지역 및 거리 조�
 
 def _call_llm_api(input_text: str) -> str:
 
-    settings = get_settings()
     if not settings.llm_api_key:
         raise RuntimeError("LLM API 호출 실패: LLM_API_KEY가 설정되지 않았습니다.")
 
@@ -80,7 +79,6 @@ def _parse_llm_response(raw_content: str) -> RegionCondition:
 
 
 def extract_region_condition(input_text: str) -> RegionCondition:
-    settings = get_settings()
 
     raw_content = _call_llm_api(input_text)
     condition = _parse_llm_response(raw_content)

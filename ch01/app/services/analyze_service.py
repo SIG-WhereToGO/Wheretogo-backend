@@ -10,7 +10,6 @@ POST /analyze 전체 파이프라인을 조율하는 서비스
   -> request_id + region + tags 반환
 """
 import uuid
-from typing import List
 
 from ch01.app.schemas.analyze import TagResult
 from ch01.app.services import candidate_service, embedding_service, tag_service
@@ -20,7 +19,8 @@ from ch01.app.stores.analysis_store import analysis_store
 
 def analyze(input_text: str) -> dict:
     # 1. KLUE-RoBERTa 태그 추출
-    tags: List[TagResult] = tag_service.extract_tags(input_text)
+    tags: list[TagResult] = tag_service.extract_tags(input_text)
+    filtered_tags: list[TagResult] = tag_service.get_filtered_tags(tags)
 
     # 2. SBERT embedding 생성
     embedding = embedding_service.generate_embedding(input_text)
@@ -40,6 +40,7 @@ def analyze(input_text: str) -> dict:
                 "request_id": request_id,
                 "input_text": input_text,
                 "tags": [tag.model_dump() for tag in tags],
+                "filtered_tags": [tag.model_dump() for tag in filtered_tags],
                 "embedding": embedding,
                 "region": condition.region,
                 "nearby": condition.nearby,
@@ -55,5 +56,5 @@ def analyze(input_text: str) -> dict:
     return {
         "request_id": request_id,
         "region": condition.region,
-        "tags": tags,
+        "tags": filtered_tags,
     }

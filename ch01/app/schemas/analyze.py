@@ -1,5 +1,5 @@
 from typing import List, Optional
-
+from dataclasses import dataclass
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -13,12 +13,16 @@ class AnalyzeRequest(BaseModel):
             raise ValueError("input_text는 비어 있을 수 없습니다.")
         return v
 
+@dataclass
+class TagInfo:
+    tag_id: int
+    category: str
 
 class TagResult(BaseModel):
     tag_id: int
+    category: str
     name: str
     probability: float
-
 
 class AnalyzeResponse(BaseModel):
     request_id: str
