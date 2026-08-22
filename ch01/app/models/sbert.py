@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from sentence_transformers import SentenceTransformer
 
-from ch01.app.config.settings import get_settings
+from ch01.app.config.settings import settings
 
 
 class SbertEmbeddingModel:
@@ -15,7 +15,6 @@ class SbertEmbeddingModel:
         self._model: Optional[SentenceTransformer] = None
 
     def load(self) -> None:
-        settings = get_settings()
         try:
             # SentenceTransformer는 내부적으로 CUDA 사용 가능 여부를 자동 감지하여
             # GPU가 있으면 GPU를, 없으면 CPU를 사용한다 허거덩

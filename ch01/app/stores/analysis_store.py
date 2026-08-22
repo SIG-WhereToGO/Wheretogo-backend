@@ -11,7 +11,7 @@ class InMemoryAnalysisStore:
     def __init__(self, ttl_minutes: int = 30):
         self._store: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.Lock()
-        self._ttl_minutes = ttl_minutes
+        self._ttl_minutes = ttl_minutes # Time To Live
 
     def set(self, request_id: str, value: Dict[str, Any]) -> None:
         expires_at = time.time() + self._ttl_minutes * 60

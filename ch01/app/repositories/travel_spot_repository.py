@@ -6,7 +6,7 @@ from typing import List
 
 from sqlalchemy import text as sql_text
 
-from ch01.app.config.settings import get_settings
+from ch01.app.config.settings import settings
 from ch01.app.database import engine
 from ch01.app.utils.distance import haversine_distance_km
 
@@ -60,7 +60,6 @@ def find_ids_within_radius_postgis(lat: float, lon: float, radius_km: float) -> 
 
 def find_ids_within_radius_haversine(lat: float, lon: float, radius_km: float) -> List[int]:
   
-
     try:
         with engine.connect() as connection:
             rows = connection.execute(
@@ -85,7 +84,7 @@ def find_ids_within_radius_haversine(lat: float, lon: float, radius_km: float) -
 
 
 def find_ids_within_radius(lat: float, lon: float, radius_km: float) -> List[int]:
-    settings = get_settings()
+
     if settings.use_postgis:
         return find_ids_within_radius_postgis(lat, lon, radius_km)
     return find_ids_within_radius_haversine(lat, lon, radius_km)
