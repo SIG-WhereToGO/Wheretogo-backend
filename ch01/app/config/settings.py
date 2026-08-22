@@ -21,12 +21,13 @@ class Settings(BaseSettings):
     # USER CONFIGURATION
     # 사용자가 직접 Fine-Tuning한 KLUE-RoBERTa 모델 / tokenizer 경로
     # ==========================================
-    #klue_model_path: str = os.getenv("KLUE_MODEL_PATH", "./ml_models/klue-roberta-travel-tag")
-    #klue_tokenizer_path: str = os.getenv("KLUE_TOKENIZER_PATH", "./ml_models/klue-roberta-travel-tag")
+    klue_model_path: str = os.getenv("KLUE_MODEL_PATH", "./ml_models/klue-roberta-travel-tag")
+    klue_tokenizer_path: str = os.getenv("KLUE_TOKENIZER_PATH", "./ml_models/klue-roberta-travel-tag")
     hf_token: str = os.getenv("HF_TOKEN", "")
 
-    klue_model_path: str = os.getenv("KLUE_MODEL_PATH", "C:\pyCoding\SIG1\KLUE_MODEL\RoBERTaforProject\content\trained\20260805_210942")
-    klue_tokenizer_path: str = os.getenv("KLUE_TOKENIZER_PATH", "C:\pyCoding\SIG1\KLUE_MODEL\RoBERTaforProject\content\trained\20260805_210942")
+    #klue_model_path: str = os.getenv("KLUE_MODEL_PATH", "C:\pyCoding\SIG1\KLUE_MODEL\RoBERTaforProject\content\trained\20260805_210942")
+    #klue_tokenizer_path: str = os.getenv("KLUE_TOKENIZER_PATH", "C:\pyCoding\SIG1\KLUE_MODEL\RoBERTaforProject\content\trained\20260805_210942")
+    
     # ==========================================
     # USER CONFIGURATION
     # 준비된 SBERT 모델 경로
