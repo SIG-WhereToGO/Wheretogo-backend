@@ -47,3 +47,6 @@ websockets==17.0.1
 torch==2.9.0
 transformers==4.57.1
 sentence-transformers==3.4.1
+protobuf==5.29.3
+sentencepiece==0.2.0
+pgvector==0.3.6
