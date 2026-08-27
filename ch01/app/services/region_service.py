@@ -10,10 +10,11 @@ from ch01.app.database import engine
 
 
 def get_base_coordinate(region_keyword: str) -> Optional[Tuple[float, float]]:
-    """region_keyword를 기준으로 대표 좌표(latitude, longitude)를 반환. 못 찾으면 None."""
+    
     if not region_keyword:
         return None
 
+    keyword = f"%{region_keyword}%"
     try:
         with engine.connect() as connection:
             row = connection.execute(
@@ -21,11 +22,25 @@ def get_base_coordinate(region_keyword: str) -> Optional[Tuple[float, float]]:
                     """
                     SELECT latitude, longitude
                     FROM "TouristSpot"
-                    WHERE name ILIKE :kw OR address ILIKE :kw OR region ILIKE :kw
+                    WHERE
+                        name ILIKE :keyword
+                        OR address ILIKE :keyword
+                        OR EXISTS (
+                            SELECT 1
+                            FROM unnest(regexp_split_to_array(region, '\\s+')) AS region_token
+                            WHERE region_token ILIKE :keyword
+                        )
+                    ORDER BY
+                        -- 더 구체적인 필드(이름/주소)에서 매칭된 경우를 우선시합니다.
+                        CASE
+                            WHEN name ILIKE :keyword THEN 0
+                            WHEN address ILIKE :keyword THEN 1
+                            ELSE 2
+                        END
                     LIMIT 1;
                     """
                 ),
-                {"kw": f"%{region_keyword}%"},
+                {"keyword": keyword},
             ).mappings().first()
     except Exception as e:
         raise RuntimeError(f"기준 좌표 조회 실패: {e}") from e
