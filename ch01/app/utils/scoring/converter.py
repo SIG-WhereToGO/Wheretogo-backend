@@ -12,7 +12,6 @@ def convert_to_Tuple(standard: tuple[str, ...], data: dict[str, float]) -> tuple
     return tuple(data.get(key) for key in standard)
 
 def recommendation_candidate_converter(
-    self, 
     scoring_model: SpotCandidateResponseFromData,
     user_style_tags: dict[str, float]
 ) -> RecommendationCandidate:
@@ -26,8 +25,8 @@ def recommendation_candidate_converter(
     user_style_tagTuple = convert_to_Tuple(standard, user_style_tagDic)
 
     soft_f1 = calculate_soft_f1 (
-        user_style_tags = tourist_style_tagTuple,
-        tourist_style_tags = user_style_tagTuple
+        user_style_tags = user_style_tagTuple,
+        tourist_style_tags = tourist_style_tagTuple
     )
 
     recommendation_score = calculate_recommendation_score (
