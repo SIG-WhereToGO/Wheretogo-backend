@@ -117,6 +117,14 @@ def build_response_infos(
             )
             errors.append(e)
 
+    if errors:
+        # 추천 엔진 또는 사용자 분석 정보 생성 중 실패한 게 있으면,
+        # candidate_dict/input_analysis_info가 None인 채로 계속 진행하지 않고
+        # (그러면 아래 tuple(candidate_dict) 등에서 "NoneType is not iterable"
+        # 같은, 원인을 알 수 없는 2차 에러로 이어지고 원래 에러 로그도 묻힙니다)
+        # 실제 원인이 된 예외를 그대로 다시 발생시킵니다.
+        raise errors[0]
+
     recommendation_spot_ids = tuple(candidate_dict)
     spotInfo_dict = get_spots_Info(recommendation_spot_ids)
 
