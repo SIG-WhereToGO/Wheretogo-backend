@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def row_to_model(row) -> RecommendSpotInfoFromData:
     detail_info = row.detail_info
-    if detail_info == {}:
+    if detail_info == []:
         detail_info = None
 
     pet_info = row.pet_info
@@ -47,6 +47,7 @@ def row_to_model(row) -> RecommendSpotInfoFromData:
         longitude = float(row.longitude), 
         image_url = row.image_url,
         pet_info = pet_info,
+        tourism_type = row.tourism_type,
         spot_tags = tourist_tags_dict
     )
 

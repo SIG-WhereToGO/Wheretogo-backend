@@ -12,7 +12,7 @@ class RecommendSpotInfoFromData(BaseModel):
     name: str
     description: str
     usage_info: dict[str, str]
-    detail_info: Optional[dict[str, str]] = None
+    detail_info: Optional[list[dict[str, str]]] = None
     region: str
     address: str
     latitude: float
@@ -24,7 +24,7 @@ class RecommendSpotInfoFromData(BaseModel):
 
 class RecommendSpotInfo(BaseModel):
     spot_id: int
-    recommendation_score: int
+    recommendation_score: float
     info: RecommendSpotInfoFromData
 
 class InputAnalysisInfo(BaseModel):
