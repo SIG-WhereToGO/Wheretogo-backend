@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
-from sqlalchemy import text, bindparam, Integer, ARRAY
+from sqlalchemy import text, bindparam, Integer, Float, ARRAY
 
-from ch01.app.config import settings 
+from ch01.app.config.settings import settings
 from ch01.app.database import engine
 from ch01.app.schemas.info import RecommendSpotInfoFromData, Tag
 from ch01.app.schemas.recommendation import RecommendationCandidate
@@ -26,7 +26,7 @@ def row_to_model(row) -> RecommendSpotInfoFromData:
 
     tourist_tags_dict = {}
 
-    for tag in tourist_tags:
+    for tag in (tourist_tags or []):
         tag_model = Tag(
             tag_id = tag["tag_id"],
             category = tag["category"],
@@ -54,7 +54,7 @@ def get_spots_Info(
         recommendation_spot_ids: tuple[int]
 ) -> dict[int, RecommendSpotInfoFromData]:
 
-    tourist_threshold = settings.tag_threshold_overrides.tourist_description_threshold
+    tourist_threshold = settings.get_tag_threshold("tourist_description_threshold")
 
     query = text(
         """
@@ -91,7 +91,7 @@ def get_spots_Info(
     ).bindparams(
         bindparam(
             "tourist_threshold",
-            type_=Integer
+            type_=Float
         ),
         bindparam(
             "recommendation_spot_ids",
