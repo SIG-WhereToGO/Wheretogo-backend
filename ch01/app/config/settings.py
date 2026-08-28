@@ -79,15 +79,25 @@ class Settings(BaseSettings):
     # CORS 허용 프론트엔드 도메인 목록 (쉼표로 구분).
     # 예: ALLOWED_ORIGINS=https://wheretogo.netlify.app,http://localhost:5173
     # 배포된 프론트 도메인이 여기 없으면 브라우저가 API 요청을 차단합니다.
+    #
+    # 주의: 이 필드를 list[str] 타입으로 선언하고 이름을 "allowed_origins"로
+    # 두면, pydantic-settings가 환경변수 ALLOWED_ORIGINS를 "리스트 타입이니
+    # JSON으로 파싱해야겠다"고 자동으로 시도하다가 콤마로 구분된 일반 문자열
+    # 앞에서 JSONDecodeError를 냅니다. 그래서 원본 값은 평범한 str 필드로
+    # 받아두고, 실제 리스트는 아래 property에서 직접 split 해서 만듭니다.
     # ==========================================
-    allowed_origins: list[str] = [
-        origin.strip()
-        for origin in os.getenv(
-            "ALLOWED_ORIGINS",
-            "http://localhost:3000,http://localhost:5173",
-        ).split(",")
-        if origin.strip()
-    ]
+    allowed_origins_raw: str = os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:3000,http://localhost:5173",
+    )
+
+    @property
+    def allowed_origins(self) -> list[str]:
+        return [
+            origin.strip()
+            for origin in self.allowed_origins_raw.split(",")
+            if origin.strip()
+        ]
 
     def get_tag_threshold(self, tag_name: str) -> float:
         return self.tag_threshold_overrides.get(tag_name, self.tag_threshold_default)
