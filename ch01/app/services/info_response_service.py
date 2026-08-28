@@ -21,6 +21,7 @@ def _map_score(
 
     for spot_id, info_from_data in spotInfo_dict.items():
         mapping_info = RecommendSpotInfo(
+            spot_id = spot_id,
             info = info_from_data,
             recommendation_score = candidate_dict[spot_id].recommendation_score
         )
