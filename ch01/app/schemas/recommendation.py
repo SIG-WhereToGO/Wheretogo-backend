@@ -22,7 +22,11 @@ class CandidateSearchRequestToData:
     )
     
     embedding_candidates_limit: ClassVar[int] = settings.vector_filter_limit
-    style_Tag_candidates_limit: ClassVar[int] = settings.style_Tag_filter_limit
+    # 기존 "style_Tag_candidates_limit"(중간 대문자 T)에서
+    # recommendation_repository.py가 "styleTag_candidates_limit"(카멜케이스)로
+    # 참조하면서 AttributeError가 나던 오타를 수정했습니다.
+    # embedding_candidates_limit와 이름 패턴을 맞춰 표준 스네이크케이스로 통일.
+    style_tag_candidates_limit: ClassVar[int] = settings.style_Tag_filter_limit
 
 
 #toService

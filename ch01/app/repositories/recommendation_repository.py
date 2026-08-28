@@ -83,7 +83,7 @@ class TouristSpotRepository:
                     "filtered_user_tags": request.filtered_user_style_tags,
                     "tourist_threshold": request.overview_threshold,
                     "user_embedding": request.user_embedding,
-                    "set_limit": request.styleTag_candidates_limit
+                    "set_limit": request.style_tag_candidates_limit
                 }
             )
 
