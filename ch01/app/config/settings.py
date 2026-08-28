@@ -74,6 +74,21 @@ class Settings(BaseSettings):
     # 입력문 길이 제한 (너무 긴 입력 방지)
     max_input_length: int = int(os.getenv("MAX_INPUT_LENGTH", "300"))
 
+    # ==========================================
+    # USER CONFIGURATION
+    # CORS 허용 프론트엔드 도메인 목록 (쉼표로 구분).
+    # 예: ALLOWED_ORIGINS=https://wheretogo.netlify.app,http://localhost:5173
+    # 배포된 프론트 도메인이 여기 없으면 브라우저가 API 요청을 차단합니다.
+    # ==========================================
+    allowed_origins: list[str] = [
+        origin.strip()
+        for origin in os.getenv(
+            "ALLOWED_ORIGINS",
+            "http://localhost:3000,http://localhost:5173",
+        ).split(",")
+        if origin.strip()
+    ]
+
     def get_tag_threshold(self, tag_name: str) -> float:
         return self.tag_threshold_overrides.get(tag_name, self.tag_threshold_default)
 

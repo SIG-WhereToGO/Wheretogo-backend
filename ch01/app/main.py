@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # ==========================================
 # 신규 POST /analyze API 관련 import
@@ -44,6 +45,19 @@ app = FastAPI(
     description="사용자 맞춤형 여행지 추천 서비스 API",
     version="1.0.0",
     lifespan=lifespan
+)
+
+# ==========================================
+# CORS 설정
+# 프론트가 백엔드와 다른 도메인(예: netlify.app)에서 API를 호출하려면
+# 그 도메인이 여기 허용 목록(ALLOWED_ORIGINS 환경변수)에 있어야 합니다.
+# ==========================================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 여행 요구사항 분석 API 연결 (POST /analyze) - 신규 추가
