@@ -41,4 +41,5 @@ def calculate_recommendation_score(
     similarity_weight = settings.similarity_weight
     normalized_similarity = (similarity + 1) / 2
     final_score = tag_score * tag_weight + normalized_similarity * similarity_weight
+    final_score = final_score * 100
     return final_score
